@@ -169,3 +169,5 @@ src/*.csv
 src/*.txt
 src/mindeyev2/
 *.sbatch
+
+!src/special515_indices.csv
