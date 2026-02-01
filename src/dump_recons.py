@@ -89,15 +89,8 @@ def recons_per_seed(args: argparse.Namespace):
     for seed in tqdm(range(args.seed_range)):
         seed_dir = os.path.join(args.input_dir, f"{seed}")
         recon_file = [file for file in os.listdir(seed_dir) if file.endswith("_recons.pt")][0]
-        all_images_file = [file for file in os.listdir(seed_dir) if file.endswith("_all_images.pt")]
-        if len(all_images_file) == 0:
-            if not args.all_images_path:
-                raise ValueError("could not find all images file in seed_dir; please provide all_images_path explicitly")
-            all_images_file = args.all_images_path
-        else:
-            all_images_file = all_images_file[0]
-        
-        all_images = torch.load(os.path.join(seed_dir, all_images_file))
+
+        all_images = torch.load(args.all_images_path)
         all_recons = torch.load(os.path.join(seed_dir, recon_file))
         if args.indices_path:
             indices = pd.read_csv(args.indices_path)['indices'].tolist()
@@ -118,9 +111,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_dir", type=str, required=True, help="path to input dir containing seed folders")
     parser.add_argument("--seed_range", type=int, default=5, help="number of seeds to collate")
-    parser.add_argument("--all_images_path", type=str, help="path to all images tensor file")
-    parser.add_argument("--indices_path", type=str, help="path to indices file")
+    parser.add_argument("--all_images_path", type=str, help="path to all images tensor file", default="./mindeyev2_data/evals/all_images.pt")
+    parser.add_argument("--indices_path", type=str, help="path to indices file", default="./special515_indices.csv")
     args = parser.parse_args()
     
-    recons_per_seed(args)    
     recons_per_seed(args)
